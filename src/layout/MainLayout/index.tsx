@@ -1,14 +1,16 @@
 import { Outlet } from "react-router-dom";
-import { Header } from "../../components/layout";
+import { Footer, NavBar, Newsletter, TopBar } from "../../components/layout";
 
 type Props = {};
 
 const MainLayout = (props: Props) => {
   return (
     <div>
-      <Header />
-      <p>Main layout</p>
+      <TopBar />
+      <NavBar />
       <Outlet />
+      <Newsletter />
+      <Footer />
     </div>
   );
 };

@@ -1,9 +1,23 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Contact, Home } from "./pages";
+import { AboutPage, Contact, Home, ServicePage } from "./pages";
 import MainLayout from "./layout/MainLayout";
+import {
+  ABOUT,
+  APPOINTMENT,
+  CONTACT,
+  HOME,
+  PRICE,
+  SERVICE,
+  TEAM,
+  TESTIMONIAL,
+} from "./constants/route";
+import TeamPage from "./pages/TeamPage";
+import PricePage from "./pages/PricePage";
+import TestimonialPage from "./pages/TestimonialPage";
+import AppointmentPage from "./pages/AppointmentPage";
 const routes = createBrowserRouter([
   {
-    path: "/",
+    path: HOME,
     element: <MainLayout />,
     children: [
       {
@@ -11,8 +25,32 @@ const routes = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/contact",
+        path: ABOUT,
+        element: <AboutPage />,
+      },
+      {
+        path: CONTACT,
         element: <Contact />,
+      },
+      {
+        path: SERVICE,
+        element: <ServicePage />,
+      },
+      {
+        path: TEAM,
+        element: <TeamPage />,
+      },
+      {
+        path: PRICE,
+        element: <PricePage />,
+      },
+      {
+        path: TESTIMONIAL,
+        element: <TestimonialPage />,
+      },
+      {
+        path: APPOINTMENT,
+        element: <AppointmentPage />,
       },
     ],
   },
