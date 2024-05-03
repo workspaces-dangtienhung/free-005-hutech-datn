@@ -1,5 +1,7 @@
 import React from "react";
 import OwlCarousel from "react-owl-carousel";
+import { Link } from "react-router-dom";
+import { APPOINTMENT } from "../../../constants/route";
 type Props = {};
 
 const Pricing = (props: Props) => {
@@ -82,12 +84,12 @@ const Pricing = (props: Props) => {
                     <span>Hỗ trợ cuộc gọi 24/7</span>
                     <i className="fa fa-check text-primary pt-1" />
                   </div>
-                  <a
-                    href="appointment.html"
+                  <Link
+                    to={APPOINTMENT}
                     className="btn btn-primary py-2 px-4 position-absolute top-100 start-50 translate-middle"
                   >
                     Đặt Lịch
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="price-item pb-4">
@@ -119,12 +121,12 @@ const Pricing = (props: Props) => {
                     <span>Hỗ trợ cuộc gọi 24/7</span>
                     <i className="fa fa-check text-primary pt-1" />
                   </div>
-                  <a
-                    href="appointment.html"
+                  <Link
+                    to={APPOINTMENT}
                     className="btn btn-primary py-2 px-4 position-absolute top-100 start-50 translate-middle"
                   >
                     Đặt Lịch
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="price-item pb-4">
@@ -156,12 +158,12 @@ const Pricing = (props: Props) => {
                     <span>Hỗ trợ cuộc gọi 24/7</span>
                     <i className="fa fa-check text-primary pt-1" />
                   </div>
-                  <a
-                    href="appointment.html"
+                  <Link
+                    to={APPOINTMENT}
                     className="btn btn-primary py-2 px-4 position-absolute top-100 start-50 translate-middle"
                   >
                     Đặt Lịch
-                  </a>
+                  </Link>
                 </div>
               </div>
             </OwlCarousel>

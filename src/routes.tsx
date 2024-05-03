@@ -1,5 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import { AboutPage, Contact, Home, ServicePage } from "./pages";
+import {
+  AboutPage,
+  ChangePassword,
+  Contact,
+  Home,
+  MyBookingPage,
+  MyHistoryBookingPage,
+  ServicePage,
+  SignInPage,
+  SignUpPage,
+} from "./pages";
 import MainLayout from "./layout/MainLayout";
 import {
   ABOUT,
@@ -8,6 +18,8 @@ import {
   HOME,
   PRICE,
   SERVICE,
+  SIGNIN,
+  SIGNUP,
   TEAM,
   TESTIMONIAL,
 } from "./constants/route";
@@ -15,6 +27,8 @@ import TeamPage from "./pages/TeamPage";
 import PricePage from "./pages/PricePage";
 import TestimonialPage from "./pages/TestimonialPage";
 import AppointmentPage from "./pages/AppointmentPage";
+import DoctorLayout from "./layout/DoctorLayout";
+import AccountLayout from "./layout/AccountLayout";
 const routes = createBrowserRouter([
   {
     path: HOME,
@@ -51,6 +65,30 @@ const routes = createBrowserRouter([
       {
         path: APPOINTMENT,
         element: <AppointmentPage />,
+      },
+    ],
+  },
+  {
+    path: SIGNIN,
+    element: <SignInPage />,
+  },
+  {
+    path: SIGNUP,
+    element: <SignUpPage />,
+  },
+  { path: "change-password", element: <ChangePassword /> },
+  {
+    path: "account",
+    element: <AccountLayout />,
+  },
+  {
+    path: "/doctor",
+    element: <DoctorLayout />,
+    children: [
+      {
+        index: true,
+        path: "/doctor/dashboard",
+        element: <div>Doctor Dashboard</div>,
       },
     ],
   },

@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { APPOINTMENT } from "../../../constants/route";
 
 type Props = {};
 
@@ -51,13 +53,13 @@ const About = (props: Props) => {
                 </h5>
               </div>
             </div>
-            <a
-              href="appointment.html"
+            <Link
+              to={APPOINTMENT}
               className="btn btn-primary py-3 px-5 mt-4 wow zoomIn"
               data-wow-delay="0.6s"
             >
               Đặt Lịch Ngay
-            </a>
+            </Link>
           </div>
           <div className="col-lg-5" style={{ minHeight: 500 }}>
             <div className="position-relative h-100">

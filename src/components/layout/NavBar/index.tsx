@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-
+import { Avatar, Dropdown, MenuProps } from "antd";
+import { LogoutOutlined, UserOutlined, LockOutlined } from "@ant-design/icons";
 import {
   ABOUT,
   APPOINTMENT,
@@ -7,14 +8,62 @@ import {
   HOME,
   PRICE,
   SERVICE,
+  SIGNIN,
+  SIGNUP,
   TEAM,
   TESTIMONIAL,
 } from "../../../constants/route";
+import { getLocalStorage } from "../../../utils";
+import { removeLocalStorage } from "../../../utils/localStorage";
+import { useEffect } from "react";
 type Props = {};
 
 const NavBar = (props: Props) => {
+  const user = getLocalStorage("user");
+
   const { pathname } = useLocation();
-  console.log(pathname);
+
+  const handleLogout = () => {
+    removeLocalStorage("user");
+    window.location.reload();
+  };
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      icon: (
+        <UserOutlined
+          style={{
+            fontSize: "18px",
+          }}
+        />
+      ),
+      label: <Link to={"account"}>Tài khoản</Link>,
+    },
+    {
+      key: "2",
+      icon: (
+        <LockOutlined
+          style={{
+            fontSize: "18px",
+          }}
+        />
+      ),
+      label: <Link to={"change-password"}>Đổi mật khẩu</Link>,
+    },
+    {
+      key: "4",
+      danger: true,
+      label: "Đăng Xuất",
+      onClick: handleLogout,
+      icon: (
+        <LogoutOutlined
+          style={{
+            fontSize: "18px",
+          }}
+        />
+      ),
+    },
+  ];
 
   const navItems = [
     { title: "Trang Chủ", link: HOME },
@@ -47,7 +96,10 @@ const NavBar = (props: Props) => {
       >
         <span className="navbar-toggler-icon"></span>
       </button>
-      <div className="collapse navbar-collapse" id="navbarCollapse">
+      <div
+        className="collapse navbar-collapse d-flex align-items-center"
+        id="navbarCollapse"
+      >
         <div className="navbar-nav ms-auto py-0">
           {navItems.map((item) =>
             item.children ? (
@@ -88,17 +140,40 @@ const NavBar = (props: Props) => {
             )
           )}
         </div>
-        <button
+        {/* <button
           type="button"
           className="btn text-dark"
           data-bs-toggle="modal"
           data-bs-target="#searchModal"
         >
           <i className="fa fa-search"></i>
-        </button>
-        <Link to={APPOINTMENT} className="btn btn-primary py-2 px-4 ms-3">
-          Đặt lịch
-        </Link>
+        </button> */}
+
+        {user ? (
+          <Dropdown menu={{ items }} arrow trigger={["click"]}>
+            <Avatar
+              style={{
+                backgroundColor: "#f56a00",
+                verticalAlign: "middle",
+                fontWeight: "bold",
+                cursor: "pointer",
+                textTransform: "uppercase",
+              }}
+              size="default"
+            >
+              {user && user?.user?.userName?.split("")[0]}
+            </Avatar>
+          </Dropdown>
+        ) : (
+          <>
+            <Link to={SIGNIN} className="btn btn-primary py-2 px-4 ms-3">
+              Đăng nhập
+            </Link>
+            <Link to={SIGNUP} className="btn btn-primary py-2 px-4 ms-3">
+              Đăng ký
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );

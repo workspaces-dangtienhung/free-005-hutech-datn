@@ -1,8 +1,24 @@
-import React from "react";
-
+import { useEffect, useState } from "react";
+import { getServices } from "../../../api";
+import { IService } from "../../../types/services.type";
+import { formatPrice } from "../../../utils";
+import { Tooltip } from "antd";
 type Props = {};
 
 const Service = (props: Props) => {
+  const [service, setService] = useState<IService[]>();
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getServices();
+        setService(data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+  console.log(service, "service");
+
   return (
     <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
       <div className="container">
@@ -34,7 +50,7 @@ const Service = (props: Props) => {
                 Chúng Tôi Cung Cấp Dịch Vụ Nha Khoa Chất Lượng Tốt Nhất
               </h1>
             </div>
-            <div className="row g-5">
+            {/* <div className="row g-5">
               <div
                 className="col-md-6 service-item wow zoomIn"
                 data-wow-delay="0.6s"
@@ -57,24 +73,45 @@ const Service = (props: Props) => {
                   <h5 className="m-0">Cấy Ghép Nha Khoa</h5>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="row g-5 wow fadeInUp" data-wow-delay="0.1s">
           <div className="col-lg-7">
             <div className="row g-5">
-              <div
-                className="col-md-6 service-item wow zoomIn"
-                data-wow-delay="0.3s"
-              >
-                <div className="rounded-top overflow-hidden">
-                  <img className="img-fluid" src="img/service-3.jpg" alt="" />
-                </div>
-                <div className="position-relative bg-light rounded-bottom text-center p-4">
-                  <h5 className="m-0">Cắt Nạo Chóp</h5>
-                </div>
-              </div>
-              <div
+              {service &&
+                service.length > 0 &&
+                service?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="col-md-6 service-item wow zoomIn"
+                    data-wow-delay={`${0.3 + index * 0.3}s`}
+                  >
+                    <Tooltip
+                      title={item.description}
+                      color="#06A3DA"
+                      placement="right"
+                    >
+                      <div className="rounded-top overflow-hidden">
+                        <img
+                          className="img-fluid"
+                          src={`img/service-${
+                            index + 1 > 4 ? 1 : index + 1
+                          }.jpg`}
+                          alt=""
+                        />
+                      </div>
+                      <div className="position-relative bg-light rounded-bottom text-center p-4">
+                        <h5 className="m-0">{item.serviceName}</h5>
+                        <span className="mt-1">
+                          Giá: {formatPrice(item.cost)}
+                        </span>
+                      </div>
+                    </Tooltip>
+                  </div>
+                ))}
+
+              {/* <div
                 className="col-md-6 service-item wow zoomIn"
                 data-wow-delay="0.6s"
               >
@@ -84,7 +121,7 @@ const Service = (props: Props) => {
                 <div className="position-relative bg-light rounded-bottom text-center p-4">
                   <h5 className="m-0">Cạo Vôi Răng</h5>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div

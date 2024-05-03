@@ -1,10 +1,14 @@
 import axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://localhost:3000",
+const intance = axios.create({
+  baseURL: "http://localhost:7212",
+  // timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-instance.interceptors.request.use(
+intance.interceptors.request.use(
   (config) => {
     // Do something before request is sent
     return config;
@@ -15,7 +19,7 @@ instance.interceptors.request.use(
   }
 );
 
-instance.interceptors.response.use(
+intance.interceptors.response.use(
   (response) => {
     // Do something with response data
     return response;
@@ -25,4 +29,4 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-export default instance;
+export default intance;

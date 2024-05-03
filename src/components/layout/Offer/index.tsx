@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { APPOINTMENT } from "../../../constants/route";
 
 type Props = {};
 
@@ -16,12 +18,9 @@ const Offer = (props: Props) => {
                 Tiết Kiệm 30% Khi Khám Răng Lần Đầu
               </h1>
               <p className="text-white mb-4" />
-              <a
-                href="appointment.html"
-                className="btn btn-dark py-3 px-5 me-3"
-              >
+              <Link to={APPOINTMENT} className="btn btn-dark py-3 px-5 me-3">
                 Đặt Lịch Ngay
-              </a>
+              </Link>
               <a href="" className="btn btn-light py-3 px-5">
                 Xem Thêm
               </a>

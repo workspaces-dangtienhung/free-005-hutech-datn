@@ -13,7 +13,9 @@ const Hero = ({ currenPage }: Props) => {
     <div className="container-fluid bg-primary py-5 hero-header mb-5">
       <div className="row py-3">
         <div className="col-12 text-center">
-          <h1 className="display-3 text-white animated zoomIn">Về Chúng Tôi</h1>
+          <h1 className="display-3 text-white animated zoomIn">
+            {currenPage.title}
+          </h1>
           <Link to={HOME} className="h4 text-white">
             Trang Chủ
           </Link>
