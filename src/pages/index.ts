@@ -4,8 +4,8 @@ import AboutPage from "./AboutPage";
 import ServicePage from "./ServicePage";
 import SignInPage from "./SiginPage";
 import SignUpPage from "./SignupPage";
-import MyBookingPage from "./MyBookingPage";
-import MyHistoryBookingPage from "./MyHistoryBookingPage";
+import MedicalRecord from "./MedicalRecord";
+import MangeAppointment from "./MangeAppointment";
 import ChangePassword from "./ChangePassword";
 export {
   Home,
@@ -14,7 +14,7 @@ export {
   ServicePage,
   SignInPage,
   SignUpPage,
-  MyBookingPage,
-  MyHistoryBookingPage,
   ChangePassword,
+  MedicalRecord,
+  MangeAppointment,
 };

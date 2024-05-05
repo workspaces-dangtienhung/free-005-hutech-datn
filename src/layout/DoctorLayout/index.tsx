@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -10,6 +10,10 @@ import {
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Menu, Layout, theme, Button, Avatar, Dropdown } from "antd";
+import { getLocalStorage } from "../../utils";
+import { Roles } from "../../types/roles.type";
+import { HOME, SIGNIN } from "../../constants/route";
+import { removeLocalStorage } from "../../utils/localStorage";
 type Props = {};
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -30,45 +34,65 @@ function getItem(
   } as MenuItem;
 }
 
-const menuItems = [
-  {
-    key: "1",
-    icon: <UserOutlined />,
-    label: "nav 1",
-  },
-  {
-    key: "2",
-    icon: <VideoCameraOutlined />,
-    label: "nav 2",
-  },
-  {
-    key: "3",
-    icon: <UploadOutlined />,
-    label: "nav 3",
-  },
-];
-
-const items: MenuProps["items"] = [
-  {
-    key: "4",
-    danger: true,
-    label: "Đăng Xuất",
-    icon: (
-      <LogoutOutlined
-        style={{
-          fontSize: "18px",
-        }}
-      />
-    ),
-  },
-];
-
 const DoctorLayout = (props: Props) => {
+  const navigate = useNavigate();
+  const user = getLocalStorage("user");
+
+  // useEffect(() => {
+  //   if (user && user.user.roleId !== Roles.staff) {
+  //     navigate(HOME);
+  //   }
+  //   if (!user) {
+  //     console.log("chua dang nhap");
+
+  //     navigate(SIGNIN);
+  //   }
+  // }, []);
   const [collapsed, setCollapsed] = useState(false);
   const { Header, Sider, Content, Footer } = Layout;
   const onClick: MenuProps["onClick"] = (e) => {
     console.log("click ", e);
   };
+
+  const items: MenuProps["items"] = [
+    {
+      key: "4",
+      danger: true,
+      label: "Đăng Xuất",
+      onClick: () => {
+        removeLocalStorage("user");
+        navigate(SIGNIN);
+        // window.location.reload();
+      },
+      icon: (
+        <LogoutOutlined
+          style={{
+            fontSize: "18px",
+          }}
+        />
+      ),
+    },
+  ];
+
+  const menuItems = [
+    {
+      key: "1",
+      icon: <UserOutlined />,
+      label: "Quản lý lịch khám",
+      onClick: () => {
+        navigate("/staff/dashboard");
+      },
+    },
+    {
+      key: "2",
+      icon: <VideoCameraOutlined />,
+      label: "Quản lý tài liệu y tế",
+      onClick: () => {
+        navigate("/staff/medical-record");
+      },
+    },
+  ];
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -127,7 +151,7 @@ const DoctorLayout = (props: Props) => {
               }}
               size="large"
             >
-              D
+              {user && user?.user?.userName?.split("")[0]}
             </Avatar>
           </Dropdown>
         </Header>

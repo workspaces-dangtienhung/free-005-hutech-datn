@@ -9,7 +9,18 @@ export const signInSchema = Yup.object({
 
 export type SignInForm = Yup.InferType<typeof signInSchema>;
 
-// export const signUpSchema = Yup.object({});
+export const signUpSchema = Yup.object({
+  userName: Yup.string().required("Tên không được để trống"),
+  phone: Yup.string().required("Số điện thoại không được để trống"),
+  email: Yup.string()
+    .email("Email không hợp lệ")
+    .required("Email không được để trống"),
+  password: Yup.string()
+    .min(6, "Mật khẩu phải từ 6 ký tự!")
+    .required("Mật khẩu không được để trống"),
+});
+
+export type SignUpForm = Yup.InferType<typeof signUpSchema>;
 
 export const changePasswordSchema = Yup.object({
   idUser: Yup.string(),

@@ -3,17 +3,21 @@ import { HOME, SIGNUP } from "../../constants/route";
 import { useForm } from "react-hook-form";
 import { SignInForm, signInSchema } from "../../schemas/schemas";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signIn } from "../../api";
+import { checkEmail, forgotPassword, signIn } from "../../api";
 import { toast } from "react-toastify";
 import "./signin.css";
-import { setLocalStorage } from "../../utils";
+import { pause, setLocalStorage } from "../../utils";
 import React from "react";
 import Spinner from "../../components/common/Spinner";
-type Props = {};
+import { Roles } from "../../types/roles.type";
+import { Modal, Form, Input, Button } from "antd";
 
 const SignInPage = () => {
   const [isLoadding, setIsLoadding] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isCheckEmail, setIsCheckEmail] = React.useState(false);
   const navigate = useNavigate();
+  const [form] = Form.useForm();
   const {
     register,
     handleSubmit,
@@ -32,15 +36,98 @@ const SignInPage = () => {
       setLocalStorage("user", newUser);
       setIsLoadding(false);
       toast.success("Đăng nhập thành công!");
-      navigate(HOME);
+      if (data?.user?.roleId === Roles.user) {
+        navigate(HOME);
+      }
+      if (data?.user?.roleId === Roles.staff) {
+        navigate("/staff/dashboard");
+      }
     } catch (error) {
       console.log(error);
-      toast.error("Có lỗi xảy ra! Vui lòng thử lại sau.");
+      setIsLoadding(false);
+      toast.error("Tài khoản hoặc mật khẩu không chính xác.");
     }
   };
+
+  const onFinish = async (values: any) => {
+    try {
+      setIsLoadding(true);
+      if (!isCheckEmail) {
+        await checkEmail(values.email);
+        await pause(1000);
+        setIsLoadding(false);
+        toast.success("Thành công.Hãy nhập mật khẩu mới!");
+        setIsCheckEmail(true);
+        return;
+      }
+      await forgotPassword(values);
+      await pause(1000);
+      setIsLoadding(false);
+      toast.success("Cập nhật mật khẩu thành công!");
+      setIsModalOpen(false);
+    } catch (error) {
+      setIsCheckEmail(false);
+      toast.error("Không tìm thấy email của bạn!");
+    }
+  };
+
   return (
     <div className="container-fluid">
       <div className="container">
+        <Modal
+          destroyOnClose
+          afterClose={() => {
+            setIsCheckEmail(false);
+            form.resetFields();
+          }}
+          title={<h5>Quên mật khẩu</h5>}
+          centered
+          footer={null}
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+        >
+          <Form form={form} layout="vertical" onFinish={onFinish}>
+            <Form.Item
+              label="Email"
+              name={"email"}
+              rules={[
+                { required: true, message: "Vui lòng nhập email của bạn!" },
+                { type: "email", message: "Email không hợp lệ!" },
+              ]}
+            >
+              <Input
+                type="email"
+                // required
+                size="large"
+                placeholder="Nhập email của bạn"
+              />
+            </Form.Item>
+            {isCheckEmail && (
+              <Form.Item
+                label={"Mật khẩu mới"}
+                rules={[
+                  { required: true, message: "Vui lòng nhập mật khẩu mới!" },
+                  { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
+                ]}
+                name={"passWord"}
+              >
+                <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
+              </Form.Item>
+            )}
+
+            <Form.Item>
+              <Button
+                htmlType="submit"
+                size="large"
+                type="primary"
+                block
+                // onClick={handleCheckEmail}
+              >
+                {isCheckEmail ? "Xác nhận cập nhật mật khẩu mới" : " Kiểm tra"}
+              </Button>
+            </Form.Item>
+          </Form>
+        </Modal>
         {isLoadding && <Spinner />}
         <div className="col-xl-10 col-lg-11 mx-auto login-container">
           <div className="row">
@@ -89,9 +176,15 @@ const SignInPage = () => {
                 </div>
                 <div className="login-row row forrr no-margin">
                   <p className="mt-4">
-                    <a className="vgh" href="">
+                    <span
+                      onClick={() => setIsModalOpen(true)}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      className="vgh"
+                    >
                       Quên mật khẩu?
-                    </a>
+                    </span>
                   </p>
                 </div>
                 <div className="login-row btnroo row no-margin">

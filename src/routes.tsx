@@ -4,8 +4,8 @@ import {
   ChangePassword,
   Contact,
   Home,
-  MyBookingPage,
-  MyHistoryBookingPage,
+  MangeAppointment,
+  MedicalRecord,
   ServicePage,
   SignInPage,
   SignUpPage,
@@ -82,13 +82,17 @@ const routes = createBrowserRouter([
     element: <AccountLayout />,
   },
   {
-    path: "/doctor",
+    path: "/staff",
     element: <DoctorLayout />,
     children: [
       {
         index: true,
-        path: "/doctor/dashboard",
-        element: <div>Doctor Dashboard</div>,
+        path: "/staff/dashboard",
+        element: <MangeAppointment />,
+      },
+      {
+        path: "/staff/medical-record",
+        element: <MedicalRecord />,
       },
     ],
   },

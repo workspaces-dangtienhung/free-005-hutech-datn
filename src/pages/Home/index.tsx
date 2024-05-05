@@ -15,7 +15,7 @@ type Props = {};
 const Home = (props: Props) => {
   return (
     <>
-      <Carousel />;
+      <Carousel />
       <Banner />
       <About />
       <Appointment />
