@@ -7,6 +7,7 @@ import {
   cancelAppointment,
 } from "./Appointment";
 import { updateSchedule } from "./DoctorApi";
+import { getClinics } from "./Clinics";
 export {
   intance,
   getServices,
@@ -18,4 +19,5 @@ export {
   checkEmail,
   forgotPassword,
   updateSchedule,
+  getClinics,
 };

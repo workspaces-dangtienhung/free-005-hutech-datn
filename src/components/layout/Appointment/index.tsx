@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Select, TimePicker, Input, DatePicker, Form } from "antd";
 import { IService } from "../../../types/services.type";
 import { IDoctor } from "../../../types/doctor.type";
-import { getServices } from "../../../api";
+import { getClinics, getServices } from "../../../api";
 import { getAllDoctors } from "../../../api/DoctorApi";
 import {
   convertToISOString,
@@ -26,6 +26,7 @@ const Appointment = () => {
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [doctor, setDoctor] = useState<{ label: string; value: string }[]>([]);
+  const [clinic, setClinic] = useState<{ label: string; value: string }[]>([]);
   const [form] = Form.useForm();
   const user = getLocalStorage("user");
   const navigate = useNavigate();
@@ -66,6 +67,20 @@ const Appointment = () => {
       } catch (error) {
         console.log(error);
       }
+
+      (async () => {
+        try {
+          const { data } = await getClinics();
+          setClinic(
+            data?.map((item: any) => ({
+              label: item?.clinicName,
+              value: item?.clinicID,
+            }))
+          );
+        } catch (error) {
+          console.log(error);
+        }
+      })();
     })();
   }, []);
 
@@ -78,7 +93,7 @@ const Appointment = () => {
     const bodyData = {
       userID: user?.user?.id,
       doctorID: values?.doctor,
-      clinicID: 1,
+      clinicID: values?.clinic,
       appointmentDate: ISOdatetime,
       status: "create",
       serviceIDs: values?.service?.map((item: any) => item.toString()),
@@ -282,6 +297,35 @@ const Appointment = () => {
                           needConfirm={false}
                           format={"HH:mm"}
                           style={{ width: "100%" }}
+                        />
+                      </Form.Item>
+                    </div>
+                  </div>
+                  <div className="col-12 col-sm-6">
+                    <div
+                      className="time"
+                      id="time1"
+                      data-target-input="nearest"
+                    >
+                      <Form.Item
+                        name={"clinic"}
+                        style={{
+                          marginBottom: 0,
+                        }}
+                        label={<span className="text-white">Phòng khám</span>}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Phòng khám không được bỏ trống !",
+                          },
+                        ]}
+                      >
+                        <Select
+                          size="large"
+                          style={{ width: "100%", textAlign: "left" }}
+                          // onChange={handleChange}
+                          placeholder="Chọn phòng khám"
+                          options={[...clinic]}
                         />
                       </Form.Item>
                     </div>

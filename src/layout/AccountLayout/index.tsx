@@ -373,41 +373,74 @@ const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
           </Col>
           <Col span={8}>
             <div>
-              <p
-                className=""
-                style={{
-                  fontWeight: 500,
-                  fontSize: "18px",
-                }}
-              >
-                Bác sĩ
-              </p>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  alignItems: "center",
-                }}
-              >
-                <img
+              <div>
+                <p
+                  className=""
                   style={{
-                    width: 100,
-                    height: 100,
-                    borderRadius: "50%",
+                    fontWeight: 500,
+                    fontSize: "18px",
                   }}
-                  src="img/team-1.jpg"
-                  alt=""
-                />
-                <div>
-                  <span
+                >
+                  Bác sĩ
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <img
                     style={{
-                      fontWeight: 500,
-                      fontSize: "16px",
+                      width: 100,
+                      height: 100,
+                      borderRadius: "50%",
                     }}
-                  >
-                    {appointmentDetail?.doctorName}
-                  </span>
+                    src="img/team-1.jpg"
+                    alt=""
+                  />
+                  <div>
+                    <span
+                      style={{
+                        fontWeight: 500,
+                        fontSize: "16px",
+                      }}
+                    >
+                      {appointmentDetail?.doctorName}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-3">
+                <p
+                  className=""
+                  style={{
+                    fontWeight: 500,
+                    fontSize: "16px",
+                  }}
+                >
+                  Phòng khám:{" "}
+                  <Tag color="gold-inverse">
+                    {appointmentDetail?.clinicName}
+                  </Tag>
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 10,
+                    alignItems: "center",
+                  }}
+                >
+                  <div>
+                    <span
+                      style={{
+                        fontWeight: 500,
+                        fontSize: "16px",
+                      }}
+                    ></span>
+                  </div>
                 </div>
               </div>
             </div>
