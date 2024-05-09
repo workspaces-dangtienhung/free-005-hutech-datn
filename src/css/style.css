@@ -329,3 +329,14 @@ h6,
   width: 120px !important;
   height: 120px;
 }
+
+/* Antd css overwrite */
+:where(
+    .css-dev-only-do-not-override-mzwlov
+  ).ant-picker-outlined.ant-picker-disabled,
+:where(
+    .css-dev-only-do-not-override-mzwlov
+  ).ant-input-outlined.ant-input-disabled,
+:where(.css-dev-only-do-not-override-mzwlov).ant-input-outlined[disabled] {
+  background: #ccc !important;
+}

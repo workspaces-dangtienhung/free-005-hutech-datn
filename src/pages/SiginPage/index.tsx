@@ -35,8 +35,10 @@ const SignInPage = () => {
       const newUser = data;
       setLocalStorage("user", newUser);
       setIsLoadding(false);
+      console.log(data);
+
       toast.success("Đăng nhập thành công!");
-      if (data?.user?.roleId === Roles.user) {
+      if (data?.user?.roleName === Roles.user) {
         navigate(HOME);
       }
       if (data?.user?.roleId === Roles.staff) {
@@ -67,6 +69,7 @@ const SignInPage = () => {
       setIsModalOpen(false);
     } catch (error) {
       setIsCheckEmail(false);
+      setIsLoadding(false);
       toast.error("Không tìm thấy email của bạn!");
     }
   };

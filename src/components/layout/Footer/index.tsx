@@ -8,7 +8,7 @@ const Footer = (props: Props) => {
       <div
         className="container-fluid bg-dark text-light py-5 wow fadeInUp"
         data-wow-delay="0.3s"
-        style={{ marginTop: "-75px" }}
+        // style={{ marginTop: "-75px" }}
       >
         <div className="container pt-5">
           <div className="row g-5 pt-4">

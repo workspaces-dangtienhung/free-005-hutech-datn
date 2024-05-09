@@ -5,9 +5,12 @@ import {
   getAppointmentByUserId,
   getAppointmentDetail,
   cancelAppointment,
+  vnPayApointment,
+  updateAppointment,
 } from "./Appointment";
-import { updateSchedule } from "./DoctorApi";
+import { updateSchedule, getDoctorDetail } from "./DoctorApi";
 import { getClinics } from "./Clinics";
+import { getSpecialty } from "./Specialty";
 export {
   intance,
   getServices,
@@ -20,4 +23,8 @@ export {
   forgotPassword,
   updateSchedule,
   getClinics,
+  getDoctorDetail,
+  getSpecialty,
+  vnPayApointment,
+  updateAppointment,
 };

@@ -14,7 +14,7 @@ const Team = (props: Props) => {
     (async () => {
       try {
         const { data } = await getAllDoctors();
-        console.log(data, "doctor");
+        // console.log(data, "doctor");
         setDoctors(data);
       } catch (error) {
         toast.error("Lỗi lấy dữ liệu bác sĩ");

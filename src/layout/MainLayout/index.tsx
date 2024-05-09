@@ -10,8 +10,8 @@ const MainLayout = (props: Props) => {
   const user = getLocalStorage("user");
 
   useEffect(() => {
-    if (user && user.user.roleId !== 3) {
-      navigate("/doctor/dashboard");
+    if (user && user.user.roleName !== "user") {
+      navigate("/staff/dashboard");
     }
   }, []);
 

@@ -30,23 +30,23 @@ const ChangePassword = (props: Props) => {
   const user = getLocalStorage("user");
 
   const onHandleChangePass = async (values: ChangePasswordForm) => {
-    console.log(values.currentPassword, "values");
+    // console.log(values.currentPassword, "values");
 
     if (user) {
-      if (user?.user?.password !== values.currentPassword) {
-        toast.error("Mật khẩu hiện tại không đúng");
-        return;
-      } else {
-        setIsLoadding(true);
-        await changePassword({
-          idUser: user.user.id,
-          newPassword: values.newPassword,
-        });
-        setIsLoadding(false);
-        toast.success("Đổi mật khẩu thành công");
-        removeLocalStorage("user");
-        navigate(SIGNIN);
-      }
+      // if (user?.user?.password !== values.currentPassword) {
+      //   toast.error("Mật khẩu hiện tại không đúng");
+      //   return;
+      // } else {
+      setIsLoadding(true);
+      await changePassword({
+        idUser: user.user.idUser,
+        newPassword: values.newPassword,
+      });
+      setIsLoadding(false);
+      toast.success("Đổi mật khẩu thành công");
+      removeLocalStorage("user");
+      navigate(SIGNIN);
+      // }
       // console.log(values, "values");
 
       // await changePassword({})
@@ -70,7 +70,7 @@ const ChangePassword = (props: Props) => {
             <div className="col-lg-5 col-md-6 no-padding">
               <div className="login-box">
                 <h5>Đổi mật khẩu</h5>
-                <div className="login-row row no-margin">
+                {/* <div className="login-row row no-margin">
                   <label htmlFor="">
                     <i className="fas fa-unlock-alt" /> Mật khẩu hiện tại
                   </label>
@@ -89,7 +89,7 @@ const ChangePassword = (props: Props) => {
                       {errors.currentPassword.message}
                     </span>
                   )}
-                </div>
+                </div> */}
                 <div className="login-row row no-margin mb-3">
                   <label htmlFor="">
                     <i className="fas fa-unlock-alt" /> Mật khẩu mới

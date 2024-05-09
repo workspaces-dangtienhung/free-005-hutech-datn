@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Footer, TopBar } from "../../components/layout";
 import {
   Tabs,
@@ -21,6 +21,7 @@ import {
   cancelAppointment,
   getAppointmentByUserId,
   getAppointmentDetail,
+  updateAppointment,
 } from "../../api/Appointment";
 import { formatDateTime, formatPrice, pause } from "../../utils";
 import { IAppointmentDetail } from "../../types/appointment.type";
@@ -47,7 +48,7 @@ const AccountLayout = (props: Props) => {
     }
     (async () => {
       try {
-        const { data } = await getAppointmentByUserId(user?.user?.id);
+        const { data } = await getAppointmentByUserId(user?.user?.idUser);
         setAppointment(data);
       } catch (error) {
         // toast.error("Có lỗi xảy ra, vui lòng thử lại sau");
@@ -55,7 +56,7 @@ const AccountLayout = (props: Props) => {
       }
     })();
   }, []);
-  console.log(appointment);
+  // console.log(appointment);
 
   const items: MenuProps["items"] = [
     {
@@ -166,11 +167,39 @@ const AccountLayout = (props: Props) => {
 export default AccountLayout;
 
 const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const appointmentId = urlParams.get("userId")?.split("=")[1];
+  const res_Code = urlParams.get("vnp_ResponseCode");
+  // console.log(userId, "userId");
+  console.log(res_Code, "res_Code");
+  console.log(appointmentId, "appointmentId");
+
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [appointmentDetail, setAppointmentDetail] =
     useState<IAppointmentDetail>();
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if (appointmentId && res_Code === "00") {
+      (async () => {
+        try {
+          await updateAppointment(appointmentId, "payed");
+          //update table after pay success
+          // toast.success("Đặt lịch thành công");
+          setAppointment((prev: any) => {
+            return prev.map((item: any) => {
+              if (item.appointmentsId === appointmentId) {
+                return { ...item, status: "payed" };
+              }
+              return item;
+            });
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }
+  }, []);
   const onHandleCancel = async (id: number | string) => {
     try {
       setIsLoading(true);
@@ -195,7 +224,6 @@ const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
     try {
       setIsLoading(true);
       const { data } = await getAppointmentDetail(id);
-      console.log(data, "data line 144");
       await pause(1000);
       setAppointmentDetail(data);
       setIsLoading(false);
@@ -213,6 +241,7 @@ const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
       key: "index",
       defaultSortOrder: "ascend",
       sorter: (a, b) => a.index - b.index,
+      width: 50,
     },
     {
       title: "Tên bệnh nhân",
@@ -261,7 +290,7 @@ const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
           >
             Xem chi tiết
           </Button>
-          {record.status !== "canceled" && (
+          {record.status !== "canceled" && record.status !== "done" && (
             <Popconfirm
               title="Bạn chắc chắn muốn hủy?"
               onConfirm={() => {
@@ -282,7 +311,7 @@ const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
     <>
       {isLoading && <Spinner />}
       <Table
-        pagination={false}
+        // pagination={false}
         columns={columns}
         dataSource={appointment.reverse()}
       />

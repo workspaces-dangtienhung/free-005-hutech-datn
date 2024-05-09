@@ -17,7 +17,7 @@ const Service = (props: Props) => {
       }
     })();
   }, []);
-  console.log(service, "service");
+  // console.log(service, "service");
 
   return (
     <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">

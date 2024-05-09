@@ -1,19 +1,33 @@
 import { useEffect, useState } from "react";
-import { Select, TimePicker, Input, DatePicker, Form } from "antd";
+import {
+  Select,
+  TimePicker,
+  Input,
+  DatePicker,
+  Form,
+  Modal,
+  Divider,
+  Tag,
+  Row,
+  Col,
+  Space,
+  Radio,
+} from "antd";
 import { IService } from "../../../types/services.type";
 import { IDoctor } from "../../../types/doctor.type";
 import { getClinics, getServices } from "../../../api";
-import { getAllDoctors } from "../../../api/DoctorApi";
+import { getAllDoctors, getDoctorDetail } from "../../../api/DoctorApi";
 import {
   convertToISOString,
   extractDateFromString,
   extractHourMinuteFromString,
+  formatPrice,
   getLocalStorage,
   pause,
 } from "../../../utils";
 import { toast } from "react-toastify";
-import { createAppointment } from "../../../api/Appointment";
-import { useNavigate } from "react-router-dom";
+import { createAppointment, vnPayApointment } from "../../../api/Appointment";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { GetProps } from "antd";
 import dayjs from "dayjs";
 import Spinner from "../../common/Spinner";
@@ -24,9 +38,11 @@ const Appointment = () => {
   const [service, setService] = useState<{ label: string; value: string }[]>(
     []
   );
+  const [serviceData, setServiceData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [doctor, setDoctor] = useState<{ label: string; value: string }[]>([]);
   const [clinic, setClinic] = useState<{ label: string; value: string }[]>([]);
+  const [hourOfDoctor, setHourOfDoctor] = useState<number[]>([]);
   const [form] = Form.useForm();
   const user = getLocalStorage("user");
   const navigate = useNavigate();
@@ -34,13 +50,27 @@ const Appointment = () => {
     // Can not select days before today and today
     return current && current < dayjs().startOf("day");
   };
+  const { state: doctorId } = useLocation();
+  // console.log(doctorId, "state");
 
   useEffect(() => {
-    user &&
+    form.setFieldsValue({
+      paymendMethod: "monney",
+    });
+    if (user) {
       form.setFieldsValue({
         userName: user?.user?.userName,
         email: user?.user?.email,
+        // doctor: 1007,
       });
+    }
+    if (doctorId) {
+      form.setFieldsValue({
+        doctor: doctorId,
+      });
+      onChooseDoctorChange(1007);
+    }
+
     (async () => {
       try {
         const { data } = await getServices();
@@ -50,6 +80,7 @@ const Appointment = () => {
             value: item?.serviceId,
           }))
         );
+        setServiceData(data);
       } catch (error) {
         console.log(error);
       }
@@ -85,13 +116,43 @@ const Appointment = () => {
   }, []);
 
   // console.log(service, "service", doctor, "doctor");
+  const onChooseDoctorChange = async (value: any) => {
+    try {
+      // const hourArr: number[] = [];
+      setIsLoading(true);
+      const { data } = await getDoctorDetail(value);
+      // console.log(data, "data");
+      const [startStr, endStr] = data?.doctor?.schedule?.split("-");
+      const startHour = parseInt(startStr.split(":")[0]);
+      const endHour = parseInt(endStr.split(":")[0]);
+      setHourOfDoctor(
+        Array.from({ length: 24 }, (_, i) => i).filter(
+          (hour) => hour < startHour || hour > endHour
+        )
+      );
+      // for (let i = 0; i <= 24; i++) {
+      //   if (i === startHour || i === endHour) continue;
+      //   hourArr.push(i);
+      // }
+      // console.log(hourArr, "hourArr");
+
+      // setHourOfDoctor(hourArr);
+      await pause(1000);
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error);
+    }
+    // console.log(matchedDoctor, "matchedDoctor");
+  };
+
   const onFinish = async (values: any) => {
     const dateData = extractDateFromString(values?.date?.$d);
     const timeData = extractHourMinuteFromString(values?.time?.$d);
     const ISOdatetime = convertToISOString(dateData, timeData);
-
     const bodyData = {
-      userID: user?.user?.id,
+      userID: user?.user?.idUser,
       doctorID: values?.doctor,
       clinicID: values?.clinic,
       appointmentDate: ISOdatetime,
@@ -99,11 +160,29 @@ const Appointment = () => {
       serviceIDs: values?.service?.map((item: any) => item.toString()),
     };
     setIsLoading(true);
-    await createAppointment(bodyData);
+    const { data } = await createAppointment(bodyData);
     await pause(1000);
     setIsLoading(false);
-    toast.success("Đặt lịch thành công !");
-    navigate("/account");
+    if (values?.paymendMethod === "vnPay") {
+      const totalCost = serviceData
+        ?.filter((item: any) => {
+          return values.service.includes(item.serviceId);
+        })
+        .reduce((acc: number, item: any) => {
+          return acc + Number(item.cost);
+        }, 0);
+
+      await vnPayApointment({
+        userId: `${user?.user?.idUser}`,
+        total: totalCost,
+        appointmentId: `${data?.AppointmentsId}`,
+      }).then((res) => {
+        window.location.href = res?.data?.url;
+      });
+    } else {
+      toast.success("Đặt lịch thành công !");
+      navigate("/account");
+    }
     // form.resetFields();
     try {
       setIsLoading(true);
@@ -183,6 +262,7 @@ const Appointment = () => {
                         size="large"
                         style={{ width: "100%", textAlign: "left" }}
                         // onChange={handleChange}
+                        onChange={onChooseDoctorChange}
                         placeholder="Chọn bác sĩ"
                         options={[...doctor]}
                       />
@@ -206,7 +286,6 @@ const Appointment = () => {
                         size="large"
                         disabled
                         type="text"
-                        className="bg-light border-0"
                         placeholder="Họ và Tên"
                         // style={{ height: 55 }}
                       />
@@ -234,7 +313,6 @@ const Appointment = () => {
                         size="large"
                         disabled
                         type="email"
-                        className=" bg-light border-0"
                         placeholder="Email"
                       />
                     </Form.Item>
@@ -272,8 +350,8 @@ const Appointment = () => {
                   </div>
                   <div className="col-12 col-sm-6">
                     <div
-                      className="time"
-                      id="time1"
+                      // className="time"
+                      // id="time1"
                       data-target-input="nearest"
                     >
                       <Form.Item
@@ -290,9 +368,8 @@ const Appointment = () => {
                         ]}
                       >
                         <TimePicker
-                          disabledHours={() => [
-                            0, 1, 2, 3, 4, 5, 6, 7, 8, 22, 23,
-                          ]}
+                          disabled={hourOfDoctor.length === 0}
+                          disabledHours={() => hourOfDoctor}
                           size="large"
                           needConfirm={false}
                           format={"HH:mm"}
@@ -301,7 +378,7 @@ const Appointment = () => {
                       </Form.Item>
                     </div>
                   </div>
-                  <div className="col-12 col-sm-6">
+                  <div className="col-12 col-sm-6 ">
                     <div
                       className="time"
                       id="time1"
@@ -330,13 +407,55 @@ const Appointment = () => {
                       </Form.Item>
                     </div>
                   </div>
+                  <div className="col-12  mb-3">
+                    <div
+                      className="time"
+                      id="time1"
+                      data-target-input="nearest"
+                    >
+                      <Form.Item
+                        name={"paymendMethod"}
+                        style={{
+                          marginBottom: 0,
+                        }}
+                        label={
+                          <span className="text-white">
+                            Phương thức thanh toán
+                          </span>
+                        }
+                        rules={[
+                          {
+                            required: true,
+                            message: "Phòng khám không được bỏ trống !",
+                          },
+                        ]}
+                      >
+                        <Radio.Group
+                          // value={"monney"}
+
+                          buttonStyle="solid"
+                          className="bg-light"
+                          style={{
+                            display: "flex",
+                            height: 40,
+                            borderRadius: 8,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Radio value={"monney"}>Thanh toán tiền mặt</Radio>
+                          <Radio value={"vnPay"}>Thanh toán qua VN Pay</Radio>
+                        </Radio.Group>
+                      </Form.Item>
+                    </div>
+                  </div>
                   <div className="col-12">
                     <button
                       disabled={!user}
                       className="btn btn-dark w-100 py-3"
                       type="submit"
                     >
-                      Đặt Lịch
+                      {user ? " Đặt Lịch" : "Hãy đăng nhập để đặt lịch"}
                     </button>
                   </div>
                 </div>

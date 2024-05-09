@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const intance = axios.create({
-  baseURL: "http://localhost:7212",
+  baseURL: "http://103.166.182.195:8080",
   // timeout: 10000,
   headers: {
     "Content-Type": "application/json",

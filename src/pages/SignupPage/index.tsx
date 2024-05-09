@@ -24,7 +24,12 @@ const SignUpPage = (props: Props) => {
       await signUp(values);
       toast.success("Đăng ký tài khoản thành công!");
       navigate(SIGNIN);
-    } catch (error) {
+    } catch (error: any) {
+      // console.log(error.response.data);
+      if (error.response.data === "Email already exists.") {
+        toast.error("Email này đã được đăng ký!");
+        return;
+      }
       toast.error("Có lỗi xảy ra! Vui lòng thử lại sau.");
     }
   };
