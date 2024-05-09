@@ -40,6 +40,9 @@ const AccountLayout = (props: Props) => {
   const [appointment, setAppointment] = useState([]);
   const navigate = useNavigate();
   const user = getLocalStorage("user");
+  const urlParams = new URLSearchParams(window.location.search);
+  const appointmentId = urlParams.get("userId")?.split("=")[1];
+  const res_Code = urlParams.get("vnp_ResponseCode");
 
   useEffect(() => {
     if (!user) {
@@ -55,6 +58,29 @@ const AccountLayout = (props: Props) => {
         console.log(error);
       }
     })();
+  }, [appointment]);
+
+  useEffect(() => {
+    if (appointmentId && res_Code === "00") {
+      (async () => {
+        try {
+          await updateAppointment(appointmentId, "payed");
+          //update table after pay success
+          // toast.success("Đặt lịch thành công");
+          setAppointment((prev: any) => {
+            return prev.map((item: any) => {
+              if (item.appointmentsId === appointmentId) {
+                return { ...item, status: "payed" };
+              }
+              return item;
+            });
+          });
+          // window.location.reload();
+        } catch (error) {
+          console.log(error);
+        }
+      })();
+    }
   }, []);
   // console.log(appointment);
 
@@ -167,39 +193,15 @@ const AccountLayout = (props: Props) => {
 export default AccountLayout;
 
 const TableManageAppointment = ({ setAppointment, appointment, user }: any) => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const appointmentId = urlParams.get("userId")?.split("=")[1];
-  const res_Code = urlParams.get("vnp_ResponseCode");
   // console.log(userId, "userId");
-  console.log(res_Code, "res_Code");
-  console.log(appointmentId, "appointmentId");
+  // console.log(res_Code, "res_Code");
+  // console.log(appointmentId, "appointmentId");
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [appointmentDetail, setAppointmentDetail] =
     useState<IAppointmentDetail>();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (appointmentId && res_Code === "00") {
-      (async () => {
-        try {
-          await updateAppointment(appointmentId, "payed");
-          //update table after pay success
-          // toast.success("Đặt lịch thành công");
-          setAppointment((prev: any) => {
-            return prev.map((item: any) => {
-              if (item.appointmentsId === appointmentId) {
-                return { ...item, status: "payed" };
-              }
-              return item;
-            });
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      })();
-    }
-  }, []);
   const onHandleCancel = async (id: number | string) => {
     try {
       setIsLoading(true);

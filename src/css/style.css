@@ -331,12 +331,8 @@ h6,
 }
 
 /* Antd css overwrite */
-:where(
-    .css-dev-only-do-not-override-mzwlov
-  ).ant-picker-outlined.ant-picker-disabled,
-:where(
-    .css-dev-only-do-not-override-mzwlov
-  ).ant-input-outlined.ant-input-disabled,
-:where(.css-dev-only-do-not-override-mzwlov).ant-input-outlined[disabled] {
+.ant-input-outlined.ant-input-disabled,
+:where(.css-dev-only-do-not-override-1okl62o).ant-input-outlined[disabled],
+.ant-picker-outlined.ant-picker-disabled {
   background: #ccc !important;
 }
