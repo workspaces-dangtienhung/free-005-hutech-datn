@@ -38,16 +38,16 @@ const DoctorLayout = (props: Props) => {
   const navigate = useNavigate();
   const user = getLocalStorage("user");
 
-  // useEffect(() => {
-  //   if (user && user.user.roleId !== Roles.staff) {
-  //     navigate(HOME);
-  //   }
-  //   if (!user) {
-  //     console.log("chua dang nhap");
+  useEffect(() => {
+    if (user && user.user.roleName !== Roles.staff) {
+      navigate(HOME);
+    }
+    if (!user) {
+      console.log("chua dang nhap");
 
-  //     navigate(SIGNIN);
-  //   }
-  // }, []);
+      navigate(SIGNIN);
+    }
+  }, []);
   const [collapsed, setCollapsed] = useState(false);
   const { Header, Sider, Content, Footer } = Layout;
   const onClick: MenuProps["onClick"] = (e) => {

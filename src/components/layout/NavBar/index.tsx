@@ -169,9 +169,9 @@ const NavBar = (props: Props) => {
             <Link to={SIGNIN} className="btn btn-primary py-2 px-4 ms-3">
               Đăng nhập
             </Link>
-            <Link to={SIGNUP} className="btn btn-primary py-2 px-4 ms-3">
+            {/* <Link to={SIGNUP} className="btn btn-primary py-2 px-4 ms-3">
               Đăng ký
-            </Link>
+            </Link> */}
           </>
         )}
       </div>

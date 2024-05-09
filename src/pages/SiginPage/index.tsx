@@ -41,7 +41,7 @@ const SignInPage = () => {
       if (data?.user?.roleName === Roles.user) {
         navigate(HOME);
       }
-      if (data?.user?.roleId === Roles.staff) {
+      if (data?.user?.roleName === Roles.staff) {
         navigate("/staff/dashboard");
       }
     } catch (error) {
